@@ -60,6 +60,7 @@ class DataGen():
             mask = cv2.cvtColor(mask, cv2.COLOR_RGB2GRAY)
 
             pixels = self.check4Hole(mask)
+
         # add mask to input
         result = cv2.add(image, mask)
 
@@ -107,6 +108,11 @@ class DataGen():
                 rural_scaled_img = self.scaleimg(rural_gray)
                 rural_augmentation_list = self.augmentBG(rural_scaled_img)
                 total_fence_index = 0
+                if total_rural_index < 29:
+                    dir = f'{self.output_dir}/train'
+                else:
+                    dir = f'{self.output_dir}/test'
+                    
                 for fence in glob.glob(self.image_dir+"/fence"+"/*"):
                     # fence
                     fence_gray = cv2.imread(fence, cv2.IMREAD_GRAYSCALE)
@@ -124,13 +130,14 @@ class DataGen():
                     for rural_img in rural_augmentation_list:
                         rows, cols = rural_img.shape
                         rural_img = rural_img[0:rows, 0:cols]
-                        
+                      
                         fence_index = 0
                         for fence_img in fence_augmentation_list_hole:
+                            
                             mask = cv2.bitwise_or(rural_scaled_img, rural_scaled_img, mask=fence_img)
                             result = cv2.add(rural_img, mask)
                             result = cv2.addWeighted(rural_img, 0.4, mask, 1.0, 0)
-                            cv2.imwrite(f'{self.output_dir}/R{total_rural_index}r{rural_index}F{total_fence_index}f{fence_index}withhole.png', result)
+                            cv2.imwrite(f'{dir}/hole/R{total_rural_index}r{rural_index}F{total_fence_index}f{fence_index}hole.png', result)
                             fence_index += 1
                             pbar.update(1)
 
@@ -139,7 +146,7 @@ class DataGen():
                             mask = cv2.bitwise_or(rural_scaled_img, rural_scaled_img, mask=fence_img)
                             result = cv2.add(rural_img, mask)
                             result = cv2.addWeighted(rural_img, 0.4, mask, 1.0, 0)
-                            cv2.imwrite(f'{self.output_dir}/R{total_rural_index}r{rural_index}F{total_fence_index}f{fence_index}withouthole.png', result)
+                            cv2.imwrite(f'{dir}/nohole/R{total_rural_index}r{rural_index}F{total_fence_index}f{fence_index}nohole.png', result)
                             fence_index += 1
                             pbar.update(1)
 
@@ -149,7 +156,7 @@ class DataGen():
                     
             
 image_dir = "raw_images"
-output_dir = "test_output"
+output_dir = "data"
 datagen = DataGen(image_dir=image_dir, output_dir=output_dir)
 datagen.image_gen()
 
