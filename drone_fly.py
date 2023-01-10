@@ -15,14 +15,14 @@ def takeoff(altitude):
     response = takeoff_service(altitude)
     return response.success
 
-def distance(point1, point2):
-    return math.sqrt((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2 + (point1[2] - point2[2])**2)
-
 def set_offboard_mode():
     rospy.wait_for_service('mavros/set_mode')
     set_mode_service = rospy.ServiceProxy('mavros/set_mode', SetMode)
     response = set_mode_service(custom_mode='OFFBOARD')
     return response.mode_sent
+
+def distance(point1, point2):
+    return math.sqrt((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2 + (point1[2] - point2[2])**2)
 
 def take_image(x, y):
     msg = rospy.wait_for_message('/iris_with_standoffs_demo/front_camera/image_raw', Image)
@@ -59,5 +59,6 @@ if __name__ == '__main__':
         move_drone(-1, 0, 0)
         rospy.sleep(1)
         take_image(x=A[0]-distance_moved, y=A[1])
-        
+
     rospy.sleep(1)
+    move_drone(0, 0, -1)
