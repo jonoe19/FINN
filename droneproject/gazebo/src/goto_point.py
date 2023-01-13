@@ -9,11 +9,13 @@ from cv_bridge import CvBridge
 
 bridge = CvBridge()
 
+
 def takeoff(altitude):
     rospy.wait_for_service('mavros/cmd/takeoff')
     takeoff_service = rospy.ServiceProxy('mavros/cmd/takeoff', CommandBool)
     response = takeoff_service(altitude)
     return response.success
+
 
 def set_offboard_mode():
     rospy.wait_for_service('mavros/set_mode')
@@ -21,26 +23,33 @@ def set_offboard_mode():
     response = set_mode_service(custom_mode='OFFBOARD')
     return response.mode_sent
 
+
 def distance(point1, point2):
     return math.sqrt((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2 + (point1[2] - point2[2])**2)
 
+
 def take_image(x, y):
-    msg = rospy.wait_for_message('/iris_with_standoffs_demo/front_camera/image_raw', Image)
+    msg = rospy.wait_for_message(
+        '/iris_with_standoffs_demo/front_camera/image_raw', Image)
     cv_image = bridge.imgmsg_to_cv2(msg, "bgr8")
     image_name = f'x{x}_y{y}.jpg'
     cv2.imwrite(os.path.join('images', image_name), cv_image)
+
 
 def move_drone(x, y, z):
     msg = Twist()
     msg.linear.x = x
     msg.linear.y = y
     msg.linear.z = z
-    pub = rospy.Publisher('/iris_with_standoffs_demo/cmd_vel', Twist, queue_size=10)
+    pub = rospy.Publisher(
+        '/iris_with_standoffs_demo/cmd_vel', Twist, queue_size=10)
     pub.publish(msg)
+
 
 if __name__ == '__main__':
     rospy.init_node('move_drone')
-    sub = rospy.Subscriber('/iris_with_standoffs_demo/front_camera/image_raw', Image, take_image)
+    sub = rospy.Subscriber(
+        '/iris_with_standoffs_demo/front_camera/image_raw', Image, take_image)
 
     A = (12, -1, 1)
     B = (-12, -1, 1)

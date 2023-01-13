@@ -1,0 +1,31 @@
+ material Gazebo/FenceNoHole
+ {
+
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture ../materials/textures/Fence.png
+      }
+    }
+  }
+}
+
+ material Gazebo/FenceHole
+ {
+    receive_shadows on
+
+  technique
+  {
+    pass
+    {
+      texture_unit
+      {
+        texture FenceHole.png
+      }
+    }
+  }
+}
+

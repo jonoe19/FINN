@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<sdf version="1.7">
+  <world name="default">
+    <!-- Global lighting -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+    <include>
+      <uri>model://ground_plane</uri>
+      <pose>0 0 0 0 0 0</pose>
+    </include>
+
+    <!-- Custom texture for ground plane -->
+    <material>
+      <script>
+        <uri>/usr/share/gazebo-11/media/materials/scripts/gazebo.material</uri>
+        <name>Gazebo/WoodFloor</name>
+      </script>
+    </material>
+
+    <!-- Wall with custom texture from JPEG file -->
+    <model name="wall">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>14 0.1 2</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>28 0.1 4</size>
+            </box>
+          </geometry>
+          <material>
+            <script>
+              <uri>/home/tomasbordoy/Documents/Master/SDU/Drones/Project/simulation_ws/my_simulations/src/world/materials/gazebo.material</uri>
+              <name>Gazebo/FenceNoHole</name>
+            </script>
+            <texture name="texture">
+              <diffuse>/home/tomasbordoy/Documents/Master/SDU/Drones/Project/simulation_ws/my_simulations/src/world/materials/textures/Fence.png</diffuse>
+            </texture>
+          </material>
+          <transparency>0</transparency>
+        </visual>
+      </link>
+      <pose>0 0 1 0 0 0</pose>
+    </model>
+    <!-- Drone model -->
+    <include>
+      <uri>model://iris_with_standoffs_demo</uri>
+      <pose> 0 -3 1 0 0 1.57079633</pose> 
+      <link name="gimbal_small_2d::tilt_link">
+      <pose>0 0 0 1.57079633 0 1.57079633</pose>
+    </link>
+    </include>
+  </world>
+</sdf>
