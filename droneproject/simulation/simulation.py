@@ -42,6 +42,9 @@ w, h = drone.drone_img.get_size()
 
 running = True
 step = 0
+wait1 = True
+wait2 = True
+wait3 = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -49,16 +52,29 @@ while running:
 
     screen.fill((255, 255, 255))
 
-    for checkpoint in checkpoints:
-        pygame.draw.circle(screen, checkpoint_color,
-                           checkpoint, checkpoint_w, checkpoint_w)
+    
 
     for idx, _wall in enumerate(walls):
         if _wall != walls[-1]:
             pygame.draw.line(screen, wall_color, _wall, walls[idx+1], wall_w)
 
+    if wait1:
+        pygame.display.update()
+        time.sleep(1)
+        wait1 = False
+    for checkpoint in checkpoints:
+        pygame.draw.circle(screen, checkpoint_color,
+                           checkpoint, checkpoint_w, checkpoint_w)
+    if wait2:
+        pygame.display.update()
+        time.sleep(1)
+        wait2 = False
     for point in points:
         pygame.draw.circle(screen, point_color, point, point_w, point_w)
+    if wait3:
+        pygame.display.update()
+        time.sleep(1)
+        wait3 = False
     if step < len(points):
         drone.move(points[step])
     else:
